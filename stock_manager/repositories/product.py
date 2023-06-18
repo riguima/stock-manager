@@ -18,8 +18,6 @@ class ProductRepository():
             model = ProductModel(
                 code=product.code,
                 name=product.name,
-                purchase_price=product.purchase_price,
-                sale_price=product.sale_price,
                 minimum_stock=product.minimum_stock,
                 description=product.description,
             )
@@ -39,8 +37,6 @@ class ProductRepository():
             id=model.id,
             code=model.code,
             name=model.name,
-            purchase_price=model.purchase_price,
-            sale_price=model.sale_price,
             minimum_stock=model.minimum_stock,
             description=model.description,
         )

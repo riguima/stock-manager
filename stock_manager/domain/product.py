@@ -8,6 +8,4 @@ class Product(BaseModel):
     code: int
     name: str
     description: str
-    purchase_price: float
-    sale_price: float
     minimum_stock: int

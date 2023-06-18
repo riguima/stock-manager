@@ -11,14 +11,14 @@ class StockWindow(QtWidgets.QWidget):
     def __init__(self, parent_window: QtWidgets.QWidget) -> None:
         super().__init__()
         self.setStyleSheet('font-size: 20px;')
-        self.setWindowTitle('Produtos')
+        self.setWindowTitle('Insumos')
 
         self.message_box = QtWidgets.QMessageBox()
         self.message_box.setWindowTitle('Aviso')
 
         self.parent_window = parent_window
 
-        self.product_label = QtWidgets.QLabel('Produto:')
+        self.product_label = QtWidgets.QLabel('Insumo:')
         self.product_combobox = QtWidgets.QComboBox()
         self.product_layout = HorizontalLayout(
             self.product_label,
@@ -52,14 +52,8 @@ class StockWindow(QtWidgets.QWidget):
         self.stock_layout.addWidget(self.return_to_parent_window_button)
         self.stock_layout.addStretch()
 
-        self.stock_table_label = QtWidgets.QLabel(
-            'Tabela de produtos',
-            alignment=QtCore.Qt.AlignCenter,
-        )
-        self.stock_table_label.setStyleSheet('font-weight: bold;')
         self.stock_table = QtWidgets.QTableView()
         self.stock_table_layout = QtWidgets.QVBoxLayout()
-        self.stock_table_layout.addWidget(self.stock_table_label)
         self.stock_table_layout.addWidget(self.stock_table)
 
         self.update_stock_table()
@@ -122,7 +116,7 @@ class StockWindow(QtWidgets.QWidget):
             ]
             for p in ProductRepository().all()
         ]
-        headers = ['ID', 'Produto', 'Quantidade']
+        headers = ['ID', 'Insumo', 'Quantidade']
         if not data:
             data = [['' for i in range(len(headers))]]
         self.stock_table.setModel(BaseModel(data, headers))

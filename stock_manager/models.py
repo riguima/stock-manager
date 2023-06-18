@@ -14,8 +14,6 @@ class ProductModel(Base):
     code: Mapped[int]
     name: Mapped[str]
     description: Mapped[str]
-    purchase_price: Mapped[float]
-    sale_price: Mapped[float]
     minimum_stock: Mapped[int]
     stock: Mapped['StockModel'] = relationship(back_populates='product')
 
