@@ -1,7 +1,7 @@
 from PySide6 import QtCore
 
 
-class ProductModel(QtCore.QAbstractTableModel):
+class BaseModel(QtCore.QAbstractTableModel):
     def __init__(self, data: list[str], headers: list[str]) -> None:
         super().__init__()
         self._data = data

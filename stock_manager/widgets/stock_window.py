@@ -69,13 +69,26 @@ class StockWindow(QtWidgets.QWidget):
 
     @QtCore.Slot()
     def delete_stock(self) -> None:
-        StockRepository().delete(
-            self.product_combobox.currentText(),
-            int(self.amount_input.text()),
-        )
-        self.update_stock_table()
-        self.message_box.setText('Estoque removido!')
-        self.message_box.show()
+        product = ProductRepository().all()[
+            self.product_combobox.currentIndex()
+        ]
+        amount = int(self.amount_input.text())
+        if StockRepository().get_amount(product) < amount:
+            self.message_box.setText(
+                'Não é possivel retirar mais que a quantidade em estoque!'
+            )
+        else:
+            if (
+                StockRepository().get_amount(product) - amount
+                < product.minimum_stock
+            ):
+                self.message_box.setText('Estoque mínimo atingido!')
+            else:
+                self.message_box.setText('Estoque removido!')
+            stock = Stock(product=product, amount=-int(self.amount_input.text()))
+            StockRepository().create(stock)
+            self.update_stock_table()
+            self.message_box.show()
 
     def update_stock_table(self) -> None:
         data = [

@@ -3,7 +3,7 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from stock_manager.domain.product import Product
 from stock_manager.repositories.product import ProductRepository
 from stock_manager.widgets.helpers import Button, HorizontalLayout
-from stock_manager.widgets.tables_models import ProductModel
+from stock_manager.widgets.tables_models import BaseModel
 
 
 class ProductWindow(QtWidgets.QWidget):
@@ -121,4 +121,4 @@ class ProductWindow(QtWidgets.QWidget):
         ]
         if not data:
             data = [''] * len(headers)
-        self.product_table.setModel(ProductModel(data, headers))
+        self.product_table.setModel(BaseModel(data, headers))

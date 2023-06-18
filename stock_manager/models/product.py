@@ -1,6 +1,7 @@
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 from stock_manager.database import db
+from stock_manager.models.stock import StockModel
 
 
 class Base(DeclarativeBase):
@@ -16,6 +17,7 @@ class ProductModel(Base):
     purchase_price: Mapped[float]
     sale_price: Mapped[float]
     minimum_stock: Mapped[int]
+    stock: Mapped['StockModel'] = relationship(back_populates='product')
 
 
 Base.metadata.create_all(db)

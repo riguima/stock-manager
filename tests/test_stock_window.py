@@ -21,12 +21,15 @@ def test_add_stock(qtbot) -> None:
     widget.amount_input.setText('100')
     widget.add_stock_button.click()
     expected = Stock(
+        id=1,
         product=product,
         amount=100,
     )
+    assert widget.message_box.text() == 'Estoque adicionado!'
+    assert widget.message_box.isVisible()
     assert StockRepository().all()[0] == expected
     assert len(widget.stock_table._data) == 1
-    assert widget.stock_table._header == ['Produto', 'Quantidade']
+    assert widget.stock_table._header == ['ID', 'Produto', 'Quantidade']
 
 
 def test_delete_stock(qtbot) -> None:
@@ -35,5 +38,30 @@ def test_delete_stock(qtbot) -> None:
     widget.product_combobox.setCurrentIndex(0)
     widget.amount_input.setText('50')
     widget.delete_stock_button.click()
-    assert len(StockRepository().all()) == 2
     assert widget.stock_table._data[0][1] == '50'
+    assert widget.message_box.text() == 'Estoque removido!'
+    assert widget.message_box.isVisible()
+
+
+def test_minimum_stock(qtbot) -> None:
+    widget = StockWindow()
+    qtbot.addWidget(widget)
+    widget.product_combobox.setCurrentIndex(0)
+    widget.amount_input.setText('40')
+    widget.delete_stock_button.click()
+    assert widget.stock_table._data[0][1] == '10'
+    assert widget.message_box.text() == 'Estoque mínimo atingido!'
+    assert widget.message_box.isVisible()
+
+
+def test_delete_stock_without_amount_avaliable(qtbot) -> None:
+    widget = StockWindow()
+    qtbot.addWidget(widget)
+    widget.product_combobox.setCurrentIndex(0)
+    widget.amount_input.setText('100')
+    widget.delete_stock_button.click()
+    assert widget.stock_table._data[0][1] == '10'
+    assert widget.message_box.text() == (
+        'Não é possivel retirar mais que a quantidade em estoque!'
+    )
+    assert widget.message_box.isVisible()
