@@ -8,8 +8,10 @@ class Base(DeclarativeBase):
 
 
 class ProductModel(Base):
+    __tablename__ = 'products'
     id: Mapped[int] = mapped_column(primary_key=True)
     code: Mapped[int]
+    name: Mapped[str]
     description: Mapped[str]
     purchase_price: Mapped[float]
     sale_price: Mapped[float]
