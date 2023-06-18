@@ -7,7 +7,7 @@ from stock_manager.widgets.tables_models import BaseModel
 
 
 class ProductWindow(QtWidgets.QWidget):
-    def __init__(self) -> None:
+    def __init__(self, parent_window: QtWidgets.QWidget) -> None:
         super().__init__()
         self.setStyleSheet('font-size: 20px;')
         self.setWindowTitle('Produtos')
@@ -15,10 +15,16 @@ class ProductWindow(QtWidgets.QWidget):
         self.message_box = QtWidgets.QMessageBox()
         self.message_box.setWindowTitle('Aviso')
 
+        self.parent_window = parent_window
+
         self.code_label = QtWidgets.QLabel('Código:')
         self.code_input = QtWidgets.QLineEdit()
         self.code_input.setValidator(QtGui.QIntValidator())
         self.code_layout = HorizontalLayout(self.code_label, self.code_input)
+
+        self.name_label = QtWidgets.QLabel('Nome:')
+        self.name_input = QtWidgets.QLineEdit()
+        self.name_layout = HorizontalLayout(self.name_label, self.name_input)
 
         self.purchase_price_label = QtWidgets.QLabel('Preço de compra:')
         self.purchase_price_input = QtWidgets.QLineEdit()
@@ -50,14 +56,21 @@ class ProductWindow(QtWidgets.QWidget):
         self.add_product_button = Button('Cadastrar Produto')
         self.add_product_button.clicked.connect(self.add_product)
 
+        self.return_to_parent_window_button = Button('Voltar')
+        self.return_to_parent_window_button.clicked.connect(
+            self.return_to_parent_window
+        )
+
         self.registration_layout = QtWidgets.QVBoxLayout()
         self.registration_layout.addLayout(self.code_layout)
+        self.registration_layout.addLayout(self.name_layout)
         self.registration_layout.addLayout(self.purchase_price_layout)
         self.registration_layout.addLayout(self.sale_price_layout)
         self.registration_layout.addLayout(self.minimum_stock_layout)
         self.registration_layout.addWidget(self.description_label)
         self.registration_layout.addWidget(self.description_text_edit)
         self.registration_layout.addWidget(self.add_product_button)
+        self.registration_layout.addWidget(self.return_to_parent_window_button)
 
         self.product_table_label = QtWidgets.QLabel('Tabela de produtos')
         self.product_table = QtWidgets.QTableView()
@@ -79,6 +92,7 @@ class ProductWindow(QtWidgets.QWidget):
     def add_product(self) -> None:
         product = Product(
             code=int(self.code_input.text()),
+            name=self.name_input.text(),
             purchase_price=float(self.purchase_price_input.text()),
             sale_price=float(self.sale_price_input.text()),
             minimum_stock=int(self.minimum_stock_input.text()),
@@ -88,6 +102,11 @@ class ProductWindow(QtWidgets.QWidget):
         self.update_product_table()
         self.message_box.setText('Produto adicionado!')
         self.message_box.show()
+
+    @QtCore.Slot()
+    def return_to_parent_window(self) -> None:
+        self.parent_window.show()
+        self.close()
 
     @QtCore.Slot()
     def delete_product(self) -> None:
@@ -104,6 +123,7 @@ class ProductWindow(QtWidgets.QWidget):
             [
                 p.id,
                 p.code,
+                p.name,
                 p.purchase_price,
                 p.sale_price,
                 p.minimum_stock,
@@ -114,6 +134,7 @@ class ProductWindow(QtWidgets.QWidget):
         headers = [
             'ID',
             'Código',
+            'Nome',
             'Preço de compra',
             'Preço de venda',
             'Estoque mínimo',

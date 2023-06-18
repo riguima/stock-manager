@@ -8,13 +8,15 @@ from stock_manager.widgets.tables_models import BaseModel
 
 
 class StockWindow(QtWidgets.QWidget):
-    def __init__(self) -> None:
+    def __init__(self, parent_window: QtWidgets.QWidget) -> None:
         super().__init__()
         self.setStyleSheet('font-size: 20px;')
         self.setWindowTitle('Produtos')
 
         self.message_box = QtWidgets.QMessageBox()
         self.message_box.setWindowTitle('Aviso')
+
+        self.parent_window = parent_window
 
         self.product_label = QtWidgets.QLabel('Produto:')
         self.product_combobox = QtWidgets.QComboBox()
@@ -38,11 +40,17 @@ class StockWindow(QtWidgets.QWidget):
         self.delete_stock_button = Button('Remover estoque')
         self.delete_stock_button.clicked.connect(self.delete_stock)
 
+        self.return_to_parent_window_button = Button('Voltar')
+        self.return_to_parent_window_button.clicked.connect(
+            self.return_to_parent_window
+        )
+
         self.stock_layout = QtWidgets.QVBoxLayout()
         self.stock_layout.addLayout(self.product_layout)
         self.stock_layout.addLayout(self.amount_layout)
         self.stock_layout.addWidget(self.add_stock_button)
         self.stock_layout.addWidget(self.delete_stock_button)
+        self.stock_layout.addWidget(self.return_to_parent_window_button)
 
         self.stock_table_label = QtWidgets.QLabel('Tabela de produtos')
         self.stock_table = QtWidgets.QTableView()
@@ -55,6 +63,12 @@ class StockWindow(QtWidgets.QWidget):
         self.layout = QtWidgets.QHBoxLayout(self)
         self.layout.addLayout(self.stock_layout)
         self.layout.addLayout(self.stock_table_layout)
+
+    def update_product_combobox(self) -> None:
+        self.product_combobox.clear()
+        self.product_combobox.addItems(
+            [p.name for p in ProductRepository().all()]
+        )
 
     @QtCore.Slot()
     def add_stock(self) -> None:
@@ -103,3 +117,8 @@ class StockWindow(QtWidgets.QWidget):
         if not data:
             data = [''] * len(headers)
         self.stock_table.setModel(BaseModel(data, headers))
+
+    @QtCore.Slot()
+    def return_to_parent_window(self) -> None:
+        self.parent_window.show()
+        self.close()
