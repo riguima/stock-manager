@@ -12,8 +12,8 @@ class StockRepository():
         with Session() as session:
             product = session.get(ProductModel, stock.product.id)
             model = StockModel(
-                product=product,
                 amount=stock.amount,
+                product_id=product.id,
             )
             session.add(model)
             session.commit()

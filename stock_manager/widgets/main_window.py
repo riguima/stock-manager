@@ -9,6 +9,7 @@ class MainWindow(QtWidgets.QWidget):
     def __init__(self) -> None:
         super().__init__()
         self.setStyleSheet('font-size: 20px;')
+        self.setFixedSize(150, 100)
         self.setWindowTitle('Janela principal')
 
         self.product_window = ProductWindow(self)
@@ -36,5 +37,6 @@ class MainWindow(QtWidgets.QWidget):
 
     @QtCore.Slot()
     def show_stock_window(self) -> None:
+        self.stock_window.update_product_combobox()
         self.stock_window.show()
         self.close()

@@ -23,8 +23,8 @@ class ProductModel(Base):
 class StockModel(Base):
     __tablename__ = 'stock'
     id: Mapped[int] = mapped_column(primary_key=True)
-    product: Mapped['ProductModel'] = relationship(back_populates='stock')
     product_id: Mapped[int] = mapped_column(ForeignKey('products.id'))
+    product: Mapped['ProductModel'] = relationship(back_populates='stock')
     amount: Mapped[int]
 
 

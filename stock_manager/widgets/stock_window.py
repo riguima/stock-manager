@@ -24,7 +24,6 @@ class StockWindow(QtWidgets.QWidget):
             self.product_label,
             self.product_combobox,
         )
-        self.update_product_combobox()
 
         self.amount_label = QtWidgets.QLabel('Quantidade:')
         self.amount_input = QtWidgets.QLineEdit()
@@ -51,8 +50,13 @@ class StockWindow(QtWidgets.QWidget):
         self.stock_layout.addWidget(self.add_stock_button)
         self.stock_layout.addWidget(self.delete_stock_button)
         self.stock_layout.addWidget(self.return_to_parent_window_button)
+        self.stock_layout.addStretch()
 
-        self.stock_table_label = QtWidgets.QLabel('Tabela de produtos')
+        self.stock_table_label = QtWidgets.QLabel(
+            'Tabela de produtos',
+            alignment=QtCore.Qt.AlignCenter,
+        )
+        self.stock_table_label.setStyleSheet('font-weight: bold;')
         self.stock_table = QtWidgets.QTableView()
         self.stock_table_layout = QtWidgets.QVBoxLayout()
         self.stock_table_layout.addWidget(self.stock_table_label)
@@ -80,6 +84,7 @@ class StockWindow(QtWidgets.QWidget):
         self.update_stock_table()
         self.message_box.setText('Estoque adicionado!')
         self.message_box.show()
+        self.amount_input.setText('0')
 
     @QtCore.Slot()
     def delete_stock(self) -> None:
@@ -94,15 +99,19 @@ class StockWindow(QtWidgets.QWidget):
         else:
             if (
                 StockRepository().get_amount(product) - amount
-                < product.minimum_stock
+                <= product.minimum_stock
             ):
                 self.message_box.setText('Estoque mínimo atingido!')
             else:
                 self.message_box.setText('Estoque removido!')
-            stock = Stock(product=product, amount=-int(self.amount_input.text()))
+            stock = Stock(
+                product=product,
+                amount=-int(self.amount_input.text()),
+            )
             StockRepository().create(stock)
             self.update_stock_table()
-            self.message_box.show()
+        self.message_box.show()
+        self.amount_input.setText('0')
 
     def update_stock_table(self) -> None:
         data = [
@@ -115,7 +124,7 @@ class StockWindow(QtWidgets.QWidget):
         ]
         headers = ['ID', 'Produto', 'Quantidade']
         if not data:
-            data = [''] * len(headers)
+            data = [['' for i in range(len(headers))]]
         self.stock_table.setModel(BaseModel(data, headers))
 
     @QtCore.Slot()

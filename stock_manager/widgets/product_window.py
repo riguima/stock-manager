@@ -72,7 +72,11 @@ class ProductWindow(QtWidgets.QWidget):
         self.registration_layout.addWidget(self.add_product_button)
         self.registration_layout.addWidget(self.return_to_parent_window_button)
 
-        self.product_table_label = QtWidgets.QLabel('Tabela de produtos')
+        self.product_table_label = QtWidgets.QLabel(
+            'Tabela de produtos',
+            alignment=QtCore.Qt.AlignCenter,
+        )
+        self.product_table_label.setStyleSheet('font-weight: bold;')
         self.product_table = QtWidgets.QTableView()
         self.delete_product_button = Button('Remover produto')
         self.delete_product_button.clicked.connect(self.delete_product)
@@ -102,6 +106,19 @@ class ProductWindow(QtWidgets.QWidget):
         self.update_product_table()
         self.message_box.setText('Produto adicionado!')
         self.message_box.show()
+        self.clear_inputs()
+
+    def clear_inputs(self) -> None:
+        inputs = [
+            self.code_input,
+            self.name_input,
+            self.purchase_price_input,
+            self.sale_price_input,
+            self.minimum_stock_input,
+        ]
+        for i in inputs:
+            i.setText('')
+        self.description_text_edit.clear()
 
     @QtCore.Slot()
     def return_to_parent_window(self) -> None:
@@ -141,5 +158,5 @@ class ProductWindow(QtWidgets.QWidget):
             'Descrição',
         ]
         if not data:
-            data = [''] * len(headers)
+            data = [['' for i in range(len(headers))]]
         self.product_table.setModel(BaseModel(data, headers))

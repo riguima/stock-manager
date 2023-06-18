@@ -4,7 +4,9 @@ from PySide6 import QtWidgets
 class Button(QtWidgets.QPushButton):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.setStyleSheet('background-color: #187bcd; color: white')
+        self.setStyleSheet(
+            'background-color: #187bcd; color: white; font-size: 20px'
+        )
 
 
 class HorizontalLayout(QtWidgets.QHBoxLayout):
